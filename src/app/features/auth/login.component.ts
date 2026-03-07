@@ -46,7 +46,7 @@ export class LoginComponent {
   onVerifyOtp() {
     if (this.otp().length !== 6) return;
     this.auth.verifyOtp('+91' + this.phone, this.otp()).subscribe(res => {
-      if (res?.data?.verifyOTP?.token) this.redirectAfterLogin();
+      if (res) this.redirectAfterLogin();
     });
   }
 
