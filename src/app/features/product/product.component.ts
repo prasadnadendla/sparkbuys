@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
+import { catchError, of } from 'rxjs';
 import { GET_PRODUCT } from '../../core/graphql/queries/product.queries';
 import { Product, ProductVariant } from '../../core/graphql/shopify.types';
 import { CartService } from '../../core/services/cart.service';
@@ -21,6 +22,7 @@ export class ProductComponent implements OnInit {
 
   product = signal<Product | null>(null);
   loading = signal(true);
+  error = signal(false);
   activeImageIndex = signal(0);
   qty = signal(1);
   selectedOptions: Record<string, string> = {};
@@ -68,11 +70,16 @@ export class ProductComponent implements OnInit {
 
   private loadProduct(handle: string) {
     this.loading.set(true);
+    this.error.set(false);
+    this.product.set(null);
     this.apollo.query<{ productByHandle: Product }>({
       query: GET_PRODUCT,
       variables: { handle },
-    }).subscribe(({ data }) => {
-      const p = data?.productByHandle ?? null;
+    }).pipe(
+      catchError(() => { this.error.set(true); this.loading.set(false); return of(null); })
+    ).subscribe(result => {
+      if (!result) return;
+      const p = result.data?.productByHandle ?? null;
       this.product.set(p);
       this.loading.set(false);
       if (p) {

@@ -28,7 +28,16 @@
         </div>
       </div>
 
-      @if (loading() && products().length === 0) {
+      @if (error()) {
+        <div class="text-center py-20">
+          <p class="text-5xl mb-4">⚠️</p>
+          <p class="text-lg font-medium text-gray-700">Something went wrong</p>
+          <p class="text-sm text-gray-400 mt-1">Could not load products. Please check your connection.</p>
+          <button (click)="onSortChange()" class="mt-5 bg-[#F05A28] text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-[#D44D20] transition-colors">
+            Try Again
+          </button>
+        </div>
+      } @else if (loading() && products().length === 0) {
         <!-- Skeleton -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           @for (i of [1,2,3,4,5,6,7,8]; track i) {

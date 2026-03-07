@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { FormsModule } from '@angular/forms';
+import { catchError, of } from 'rxjs';
 import { GET_PRODUCTS } from '../../core/graphql/queries/product.queries';
 import { GET_COLLECTION } from '../../core/graphql/queries/collection.queries';
 import { Product, Collection, PageInfo } from '../../core/graphql/shopify.types';
@@ -33,6 +34,7 @@ export class CatalogComponent implements OnInit {
   collection = signal<Collection | null>(null);
   pageInfo = signal<PageInfo | null>(null);
   loading = signal(true);
+  error = signal(false);
   sortOptions = SORT_OPTIONS;
   sortIndex = 0;
 
@@ -62,6 +64,7 @@ export class CatalogComponent implements OnInit {
     this.products.set([]);
     this.pageInfo.set(null);
     this.loading.set(true);
+    this.error.set(false);
   }
 
   private load(after?: string) {
@@ -73,8 +76,11 @@ export class CatalogComponent implements OnInit {
         query: GET_COLLECTION,
         variables: { handle: this.handle, first: this.PAGE_SIZE, after, sortKey: sort.key, reverse: sort.reverse },
         fetchPolicy: 'network-only',
-      }).subscribe(({ data }) => {
-        const col = data?.collection;
+      }).pipe(
+        catchError(() => { this.error.set(true); this.loading.set(false); return of(null); })
+      ).subscribe(result => {
+        if (!result) return;
+        const col = result.data?.collection;
         if (!col) return;
         this.collection.set(col);
         this.products.update(prev => [...prev, ...(col.products?.nodes ?? [])]);
@@ -87,10 +93,12 @@ export class CatalogComponent implements OnInit {
         query: GET_PRODUCTS,
         variables: { first: this.PAGE_SIZE, after, sortKey: sort.key, reverse: sort.reverse },
         fetchPolicy: 'network-only',
-      }).subscribe(({ data }) => {
-        if (!data) return;
-        this.products.update(prev => [...prev, ...data.products.nodes]);
-        this.pageInfo.set(data.products.pageInfo);
+      }).pipe(
+        catchError(() => { this.error.set(true); this.loading.set(false); return of(null); })
+      ).subscribe(result => {
+        if (!result?.data) return;
+        this.products.update(prev => [...prev, ...result.data!.products.nodes]);
+        this.pageInfo.set(result.data!.products.pageInfo);
         this.loading.set(false);
         this.seo.setCollection({ title: 'All Products' });
       });

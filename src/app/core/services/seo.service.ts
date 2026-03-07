@@ -1,5 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 
 export interface SeoConfig {
@@ -20,14 +22,17 @@ export class SeoService {
   private title = inject(Title);
   private meta = inject(Meta);
   private router = inject(Router);
+  private doc = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
 
   set(config: SeoConfig) {
     const pageTitle = config.title ? `${config.title} | ${SITE_NAME}` : SITE_NAME;
     const description = config.description ?? DEFAULT_DESC;
     const image = config.image ?? DEFAULT_IMAGE;
-    const url = `${BASE_URL}${this.router.url}`;
+    const url = `${BASE_URL}${this.router.url.split('?')[0]}`;
 
     this.title.setTitle(pageTitle);
+    this.setCanonical(url);
 
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ property: 'og:title', content: pageTitle });
@@ -62,5 +67,15 @@ export class SeoService {
       title: collection.title,
       description: collection.description,
     });
+  }
+
+  private setCanonical(url: string) {
+    let link = this.doc.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', url);
   }
 }
