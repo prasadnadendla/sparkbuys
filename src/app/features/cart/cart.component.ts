@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -10,7 +10,7 @@ import { InrPipe } from '../../shared/pipes/inr.pipe';
   imports: [RouterLink, InrPipe],
   templateUrl: './cart.component.html'
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
   cart = inject(CartService);
   private seo = inject(SeoService);
 

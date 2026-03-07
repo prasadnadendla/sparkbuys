@@ -16,7 +16,7 @@ export class QueryService {
   private localStorageService = inject(LocalStorageService)
   private apollo = inject(Apollo)
 
-  baseURL = environment.baseURL
+  baseURL = environment.apiBaseURL
 
 
   getURL(path: string, params?: Record<string, string>) {

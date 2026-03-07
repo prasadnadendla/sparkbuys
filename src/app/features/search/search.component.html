@@ -5,10 +5,12 @@
     <div class="flex rounded-xl border border-gray-200 overflow-hidden focus-within:border-[#439D4C] transition-colors max-w-xl">
       <input
         [(ngModel)]="query"
+        (ngModelChange)="onQueryChange()"
         name="q"
         type="search"
         placeholder="Search products..."
         class="flex-1 px-4 py-3 outline-none text-sm"
+        autocomplete="off"
       />
       <button type="submit" class="px-5 bg-[#439D4C] text-white hover:bg-[#37883f] transition-colors font-medium">
         Search
