@@ -10,6 +10,9 @@ export const GET_COLLECTIONS = gql`
         handle
         description
         image { url altText }
+        products(first: 4) {
+          nodes { id featuredImage { url altText } }
+        }
       }
     }
   }

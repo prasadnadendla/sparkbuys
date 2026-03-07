@@ -21,6 +21,15 @@ export class HomeComponent implements OnInit {
   productsLoading = signal(true);
   collectionsLoading = signal(true);
 
+  private readonly TITLE_MAP: Record<string, string> = {
+    'frontpage': 'Featured',
+    'home-page': 'Featured',
+  };
+
+  collectionLabel(handle: string, title: string): string {
+    return this.TITLE_MAP[handle] ?? title;
+  }
+
   features = [
     { icon: '🚚', title: 'Free Shipping', desc: 'On all orders across India' },
     { icon: '↩️', title: 'Easy Returns', desc: '7-day hassle-free returns' },
