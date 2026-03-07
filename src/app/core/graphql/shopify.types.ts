@@ -94,6 +94,50 @@ export interface CartLineItem {
   };
 }
 
+export interface MailingAddress {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  province?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+}
+
+export interface OrderLineItem {
+  title: string;
+  quantity: number;
+  variant: {
+    image?: Image | null;
+    price: Money;
+  } | null;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: number;
+  processedAt: string;
+  financialStatus: string;
+  fulfillmentStatus: string;
+  currentTotalPrice: Money;
+  statusUrl: string;
+  lineItems: { nodes: OrderLineItem[] };
+}
+
+export interface CustomerData {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  defaultAddress?: MailingAddress | null;
+  addresses: { nodes: MailingAddress[] };
+  orders: { nodes: Order[] };
+}
+
 export interface Cart {
   id: string;
   checkoutUrl: string;
