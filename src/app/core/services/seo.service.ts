@@ -12,7 +12,7 @@ export interface SeoConfig {
 
 const SITE_NAME = 'Sparkbuys';
 const BASE_URL = 'https://sparkbuys.in';
-const DEFAULT_IMAGE = `${BASE_URL}/icons/icon-512x512.png`;
+const DEFAULT_IMAGE = `${BASE_URL}/icons/logo.webp`;
 const DEFAULT_DESC = 'Shop trending gadgets, home essentials, fitness gear and lifestyle products at best prices. COD available, free shipping across India.';
 
 @Injectable({ providedIn: 'root' })

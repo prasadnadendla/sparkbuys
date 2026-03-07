@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { SEARCH_PRODUCTS } from '../../core/graphql/queries/search.queries';
+import { GET_FEATURED_PRODUCTS } from '../../core/graphql/queries/product.queries';
 import { Product } from '../../core/graphql/shopify.types';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { SeoService } from '../../core/services/seo.service';
@@ -25,12 +26,15 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   query = '';
   products = signal<Product[]>([]);
+  trendingProducts = signal<Product[]>([]);
   loading = signal(false);
+  trendingLoading = signal(true);
   searched = signal(false);
   lastQuery = signal('');
 
   ngOnInit() {
     this.seo.set({ title: 'Search' });
+    this.loadTrending();
 
     this.queryInput$.pipe(
       debounceTime(300),
@@ -64,6 +68,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     const q = this.query.trim();
     if (!q) return;
     this.router.navigate([], { queryParams: { q }, queryParamsHandling: 'merge' });
+  }
+
+  private loadTrending() {
+    this.apollo.query<{ products: { nodes: Product[] } }>({
+      query: GET_FEATURED_PRODUCTS,
+      variables: { first: 8 },
+    }).subscribe(({ data }) => {
+      this.trendingProducts.set(data?.products?.nodes ?? []);
+      this.trendingLoading.set(false);
+    });
   }
 
   private doSearch(q: string) {
