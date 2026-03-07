@@ -17,6 +17,9 @@ export const PRODUCT_CARD_FRAGMENT = gql`
     collections(first: 3) {
       nodes { handle title }
     }
+    variants(first: 1) {
+      nodes { id }
+    }
   }
 `;
 

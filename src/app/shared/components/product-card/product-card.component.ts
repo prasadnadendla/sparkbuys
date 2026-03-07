@@ -1,4 +1,4 @@
-import { Component, input, inject } from '@angular/core';
+import { Component, input, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../../core/graphql/shopify.types';
 import { CartService } from '../../../core/services/cart.service';
@@ -13,6 +13,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
 export class ProductCardComponent {
   product = input.required<Product>();
   cart = inject(CartService);
+  adding = signal(false);
 
   get price(): () => number {
     return () => parseFloat(this.product().priceRange.minVariantPrice.amount);
@@ -33,8 +34,12 @@ export class ProductCardComponent {
 
   addToCart(e: Event) {
     e.preventDefault();
-    const variants = (this.product() as any).variants?.nodes;
-    const variantId = variants?.[0]?.id ?? this.product().id;
+    const variants = this.product().variants?.nodes;
+    const variantId = variants?.[0]?.id;
+    if (!variantId) return;
+    this.adding.set(true);
     this.cart.addItem(variantId);
+    // Reset local state after a short delay (cart.loading is global)
+    setTimeout(() => this.adding.set(false), 1500);
   }
 }
