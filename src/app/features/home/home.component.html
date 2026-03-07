@@ -1,15 +1,15 @@
 <!-- Hero Banner -->
-<section class="bg-gradient-to-br from-[#439D4C]/10 to-white py-12 px-4">
+<section class="bg-gradient-to-br from-[#F05A28]/10 to-white py-12 px-4">
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8">
     <div class="flex-1 text-center md:text-left">
-      <span class="inline-block bg-[#439D4C]/10 text-[#439D4C] text-sm font-semibold px-3 py-1 rounded-full mb-4">🔥 Limited Time Offers</span>
-      <h1 class="text-4xl md:text-5xl font-bold text-[#282a31] leading-tight">
-        Trending Products<br/><span class="text-[#439D4C]">At Best Prices</span>
+      <span class="inline-block bg-[#F05A28]/10 text-[#F05A28] text-sm font-semibold px-3 py-1 rounded-full mb-4">🔥 Limited Time Offers</span>
+      <h1 class="text-4xl md:text-5xl font-bold text-[#1A2744] leading-tight">
+        Trending Products<br/><span class="text-[#F05A28]">At Best Prices</span>
       </h1>
       <p class="mt-4 text-gray-500 text-lg">Gadgets, home essentials & lifestyle picks — with free shipping & COD across India.</p>
       <div class="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
-        <a routerLink="/collections/all" class="bg-[#439D4C] hover:bg-[#37883f] text-white font-semibold px-6 py-3 rounded-xl transition-colors">Shop Now</a>
-        <a routerLink="/collections/trending-now" class="border border-[#439D4C] text-[#439D4C] font-semibold px-6 py-3 rounded-xl hover:bg-[#439D4C]/5 transition-colors">View Trending</a>
+        <a routerLink="/collections/all" class="bg-[#F05A28] hover:bg-[#D44D20] text-white font-semibold px-6 py-3 rounded-xl transition-colors">Shop Now</a>
+        <a routerLink="/collections/trending-now" class="border border-[#F05A28] text-[#F05A28] font-semibold px-6 py-3 rounded-xl hover:bg-[#F05A28]/5 transition-colors">View Trending</a>
       </div>
       <!-- Trust badges -->
       <div class="mt-8 flex flex-wrap gap-4 justify-center md:justify-start text-sm text-gray-500">
@@ -27,7 +27,7 @@
 <!-- Category Slider -->
 <section class="py-10 px-4 bg-white">
   <div class="max-w-7xl mx-auto">
-    <h2 class="text-2xl font-bold text-[#282a31] mb-6">Shop by Category</h2>
+    <h2 class="text-2xl font-bold text-[#1A2744] mb-6">Shop by Category</h2>
     @if (collectionsLoading()) {
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         @for (i of [1,2,3,4]; track i) {
@@ -43,7 +43,7 @@
               <img [src]="col.image.url" [alt]="col.title" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"/>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             } @else {
-              <div class="absolute inset-0 bg-gradient-to-br from-[#439D4C]/20 to-[#439D4C]/40"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-[#F05A28]/20 to-[#F05A28]/40"></div>
             }
             <span class="absolute bottom-3 left-3 text-white font-semibold text-sm drop-shadow">{{ col.title }}</span>
           </a>
@@ -57,8 +57,8 @@
 <section class="py-10 px-4 bg-gray-50">
   <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-[#282a31]">🔥 Trending Now</h2>
-      <a routerLink="/collections/all" class="text-sm text-[#439D4C] font-medium hover:underline">View All →</a>
+      <h2 class="text-2xl font-bold text-[#1A2744]">🔥 Trending Now</h2>
+      <a routerLink="/collections/all" class="text-sm text-[#F05A28] font-medium hover:underline">View All →</a>
     </div>
     @if (productsLoading()) {
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -79,7 +79,7 @@
         }
       </div>
       <div class="mt-8 text-center">
-        <a routerLink="/collections/all" class="inline-block border border-[#439D4C] text-[#439D4C] font-semibold px-8 py-3 rounded-xl hover:bg-[#439D4C] hover:text-white transition-colors">
+        <a routerLink="/collections/all" class="inline-block border border-[#F05A28] text-[#F05A28] font-semibold px-8 py-3 rounded-xl hover:bg-[#F05A28] hover:text-white transition-colors">
           View All Products
         </a>
       </div>
@@ -92,7 +92,7 @@
   <div class="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
     @for (feat of features; track feat.title) {
       <div class="flex flex-col items-center gap-2">
-        <div class="w-14 h-14 rounded-full bg-[#439D4C]/10 flex items-center justify-center text-2xl">{{ feat.icon }}</div>
+        <div class="w-14 h-14 rounded-full bg-[#F05A28]/10 flex items-center justify-center text-2xl">{{ feat.icon }}</div>
         <h3 class="font-semibold text-gray-800 text-sm">{{ feat.title }}</h3>
         <p class="text-xs text-gray-400">{{ feat.desc }}</p>
       </div>

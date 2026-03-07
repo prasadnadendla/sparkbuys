@@ -1,12 +1,12 @@
 <div class="max-w-5xl mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold text-[#282a31] mb-6">Your Cart</h1>
+  <h1 class="text-2xl font-bold text-[#1A2744] mb-6">Your Cart</h1>
 
   @if (cart.items().length === 0) {
     <div class="text-center py-20 text-gray-400">
       <p class="text-5xl mb-4">🛒</p>
       <p class="text-lg font-medium text-gray-600">Your cart is empty</p>
       <p class="text-sm mt-1">Looks like you haven't added anything yet.</p>
-      <a routerLink="/collections/all" class="mt-6 inline-block bg-[#439D4C] text-white font-semibold px-8 py-3 rounded-xl hover:bg-[#37883f] transition-colors">
+      <a routerLink="/collections/all" class="mt-6 inline-block bg-[#F05A28] text-white font-semibold px-8 py-3 rounded-xl hover:bg-[#D44D20] transition-colors">
         Start Shopping
       </a>
     </div>
@@ -25,7 +25,7 @@
             </a>
             <div class="flex-1 min-w-0">
               <a [routerLink]="['/products', item.merchandise.product.handle]"
-                 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-[#439D4C]">
+                 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-[#F05A28]">
                 {{ item.merchandise.product.title }}
               </a>
               @if (item.merchandise.title !== 'Default Title') {
@@ -63,7 +63,7 @@
             </div>
             <div class="flex justify-between text-gray-600">
               <span>Shipping</span>
-              <span class="text-[#439D4C] font-medium">FREE</span>
+              <span class="text-[#F05A28] font-medium">FREE</span>
             </div>
           </div>
           <div class="border-t border-gray-100 mt-4 pt-4 flex justify-between font-bold text-gray-900">
@@ -74,11 +74,11 @@
             [href]="cart.cart()?.checkoutUrl ?? '#'"
             target="_blank"
             rel="noopener"
-            class="mt-4 block text-center bg-[#439D4C] hover:bg-[#37883f] text-white font-semibold py-3.5 rounded-xl transition-colors"
+            class="mt-4 block text-center bg-[#F05A28] hover:bg-[#D44D20] text-white font-semibold py-3.5 rounded-xl transition-colors"
           >
             Proceed to Checkout →
           </a>
-          <a routerLink="/collections/all" class="mt-3 block text-center text-sm text-[#439D4C] hover:underline">
+          <a routerLink="/collections/all" class="mt-3 block text-center text-sm text-[#F05A28] hover:underline">
             Continue Shopping
           </a>
           <!-- Trust -->

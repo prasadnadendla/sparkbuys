@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto px-4 py-8">
   <!-- Breadcrumb -->
   <nav class="text-sm text-gray-400 mb-4">
-    <a routerLink="/" class="hover:text-[#439D4C]">Home</a>
+    <a routerLink="/" class="hover:text-[#F05A28]">Home</a>
     <span class="mx-2">/</span>
     <span class="text-gray-700">{{ collectionTitle() }}</span>
   </nav>
@@ -12,7 +12,7 @@
       <!-- Header row -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 class="text-2xl font-bold text-[#282a31]">{{ collectionTitle() }}</h1>
+          <h1 class="text-2xl font-bold text-[#1A2744]">{{ collectionTitle() }}</h1>
           @if (collection()?.description) {
             <p class="text-sm text-gray-500 mt-1">{{ collection()?.description }}</p>
           }
@@ -58,7 +58,7 @@
             <button
               (click)="loadMore()"
               [disabled]="loading()"
-              class="border border-[#439D4C] text-[#439D4C] hover:bg-[#439D4C] hover:text-white disabled:opacity-50 font-semibold px-8 py-3 rounded-xl transition-colors"
+              class="border border-[#F05A28] text-[#F05A28] hover:bg-[#F05A28] hover:text-white disabled:opacity-50 font-semibold px-8 py-3 rounded-xl transition-colors"
             >
               {{ loading() ? 'Loading...' : 'Load More' }}
             </button>

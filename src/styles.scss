@@ -6,15 +6,17 @@
 * { box-sizing: border-box; }
 
 :root {
-  --color-primary: #439D4C;
-  --color-dark: #282a31;
+  --color-primary: #F05A28;
+  --color-dark: #1A2744;
 }
 
-body {
-  font-family: 'Poppins', system-ui, sans-serif;
-  color: var(--color-dark);
-  background: #fff;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: var(--color-dark);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 /* Smooth scrolling */

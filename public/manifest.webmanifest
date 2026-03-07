@@ -4,7 +4,7 @@
   "description": "Shop trending gadgets, home essentials and lifestyle products. COD available, free shipping across India.",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#439D4C",
+  "theme_color": "#F05A28",
   "background_color": "#ffffff",
   "scope": "/",
   "start_url": "/",
