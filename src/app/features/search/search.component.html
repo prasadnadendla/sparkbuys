@@ -1,0 +1,47 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-[#282a31] mb-6">Search</h1>
+
+  <form (ngSubmit)="onSearch()" class="mb-8">
+    <div class="flex rounded-xl border border-gray-200 overflow-hidden focus-within:border-[#439D4C] transition-colors max-w-xl">
+      <input
+        [(ngModel)]="query"
+        name="q"
+        type="search"
+        placeholder="Search products..."
+        class="flex-1 px-4 py-3 outline-none text-sm"
+      />
+      <button type="submit" class="px-5 bg-[#439D4C] text-white hover:bg-[#37883f] transition-colors font-medium">
+        Search
+      </button>
+    </div>
+  </form>
+
+  @if (loading()) {
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      @for (i of [1,2,3,4,5,6,7,8]; track i) {
+        <div class="rounded-2xl bg-white border border-gray-100 overflow-hidden">
+          <div class="aspect-square bg-gray-100 animate-pulse"></div>
+          <div class="p-3 space-y-2">
+            <div class="h-4 bg-gray-100 rounded animate-pulse"></div>
+            <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (searched() && products().length === 0) {
+    <div class="text-center py-16 text-gray-400">
+      <p class="text-4xl mb-3">🔍</p>
+      <p class="font-medium">No results for "{{ lastQuery() }}"</p>
+      <p class="text-sm mt-1">Try different keywords</p>
+    </div>
+  } @else if (products().length > 0) {
+    <p class="text-sm text-gray-500 mb-4">{{ products().length }} results for "<strong>{{ lastQuery() }}</strong>"</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  } @else {
+    <p class="text-gray-400 text-sm">Enter keywords to search products.</p>
+  }
+</div>

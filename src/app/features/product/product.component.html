@@ -1,0 +1,135 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  @if (loading()) {
+    <!-- Skeleton -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
+      <div class="aspect-square bg-gray-100 rounded-2xl"></div>
+      <div class="space-y-4">
+        <div class="h-8 bg-gray-100 rounded w-3/4"></div>
+        <div class="h-6 bg-gray-100 rounded w-1/4"></div>
+        <div class="h-4 bg-gray-100 rounded"></div>
+        <div class="h-4 bg-gray-100 rounded w-5/6"></div>
+        <div class="h-12 bg-gray-100 rounded-xl"></div>
+      </div>
+    </div>
+  } @else if (product()) {
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-400 mb-6">
+      <a routerLink="/" class="hover:text-[#439D4C]">Home</a>
+      <span class="mx-2">/</span>
+      @if (product()!.collections?.nodes?.[0]; as col) {
+        <a [routerLink]="['/collections', col.handle]" class="hover:text-[#439D4C]">{{ col.title }}</a>
+        <span class="mx-2">/</span>
+      }
+      <span class="text-gray-700 line-clamp-1">{{ product()!.title }}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+      <!-- Image Gallery -->
+      <div>
+        <div class="rounded-2xl overflow-hidden bg-gray-50 aspect-square mb-3">
+          <img
+            [src]="activeImage()"
+            [alt]="product()!.title"
+            class="w-full h-full object-contain"
+          />
+        </div>
+        @if (images().length > 1) {
+          <div class="flex gap-2 overflow-x-auto pb-1">
+            @for (img of images(); track img.url; let i = $index) {
+              <button
+                (click)="activeImageIndex.set(i)"
+                [class.ring-2]="activeImageIndex() === i"
+                class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-50 ring-[#439D4C] ring-offset-1"
+              >
+                <img [src]="img.url" [alt]="img.altText ?? ''" class="w-full h-full object-cover"/>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Product Info -->
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-[#282a31] leading-snug">{{ product()!.title }}</h1>
+
+        <!-- Price -->
+        <div class="mt-4 flex items-baseline gap-3">
+          <span class="text-3xl font-bold text-[#282a31]">{{ selectedVariant()?.price?.amount | inr }}</span>
+          @if (compareAtPrice() > 0 && compareAtPrice() > selectedPrice()) {
+            <span class="text-lg text-gray-400 line-through">{{ compareAtPrice() | inr }}</span>
+            <span class="bg-red-100 text-red-600 text-sm font-bold px-2 py-0.5 rounded-full">{{ discount() }}% OFF</span>
+          }
+        </div>
+
+        <!-- Variants / Options -->
+        @for (option of product()!.options; track option.name) {
+          @if (option.values.length > 1) {
+            <div class="mt-5">
+              <p class="text-sm font-medium text-gray-700 mb-2">{{ option.name }}</p>
+              <div class="flex flex-wrap gap-2">
+                @for (val of option.values; track val) {
+                  <button
+                    (click)="selectOption(option.name, val)"
+                    [class.bg-[#439D4C]]="selectedOptions[option.name] === val"
+                    [class.text-white]="selectedOptions[option.name] === val"
+                    [class.border-[#439D4C]]="selectedOptions[option.name] === val"
+                    class="border border-gray-200 text-gray-700 text-sm px-3 py-1.5 rounded-lg hover:border-[#439D4C] transition-colors"
+                  >{{ val }}</button>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Quantity -->
+        <div class="mt-5 flex items-center gap-4">
+          <span class="text-sm font-medium text-gray-700">Qty:</span>
+          <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+            <button (click)="qty.set(Math.max(1, qty() - 1))" class="px-3 py-2 hover:bg-gray-50 text-gray-700">−</button>
+            <span class="px-4 py-2 text-sm font-semibold">{{ qty() }}</span>
+            <button (click)="qty.set(qty() + 1)" class="px-3 py-2 hover:bg-gray-50 text-gray-700">+</button>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            [disabled]="!product()!.availableForSale || cart.loading()"
+            (click)="addToCart()"
+            class="flex-1 bg-[#439D4C] hover:bg-[#37883f] disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-3.5 rounded-xl transition-colors"
+          >
+            {{ cart.loading() ? 'Adding...' : (product()!.availableForSale ? 'Add to Cart' : 'Sold Out') }}
+          </button>
+          <a
+            [href]="buyNowUrl()"
+            target="_blank"
+            class="flex-1 border-2 border-[#439D4C] text-[#439D4C] hover:bg-[#439D4C] hover:text-white font-semibold py-3.5 rounded-xl text-center transition-colors"
+          >
+            Buy Now
+          </a>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="mt-5 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
+          <div class="bg-gray-50 rounded-xl p-2">🚚<br/>Free Shipping</div>
+          <div class="bg-gray-50 rounded-xl p-2">💳<br/>COD Available</div>
+          <div class="bg-gray-50 rounded-xl p-2">↩️<br/>Easy Returns</div>
+        </div>
+
+        <!-- Description -->
+        @if (product()!.descriptionHtml) {
+          <div class="mt-8">
+            <h2 class="text-base font-semibold text-[#282a31] mb-3">Product Details</h2>
+            <div class="prose prose-sm max-w-none text-gray-600" [innerHTML]="product()!.descriptionHtml"></div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="text-center py-20 text-gray-400">
+      <p class="text-5xl mb-4">😕</p>
+      <p class="text-lg font-medium">Product not found</p>
+      <a routerLink="/collections/all" class="mt-4 inline-block text-[#439D4C] underline">Browse all products</a>
+    </div>
+  }
+</div>

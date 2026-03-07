@@ -1,0 +1,41 @@
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-[#282a31] mb-6">My Account</h1>
+
+  <!-- Profile card -->
+  <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6 flex items-center gap-4">
+    <div class="w-14 h-14 rounded-full bg-[#439D4C]/10 flex items-center justify-center text-2xl font-bold text-[#439D4C]">
+      {{ initials() }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="font-semibold text-gray-800">{{ auth.user()?.name ?? 'Customer' }}</p>
+      <p class="text-sm text-gray-400">{{ auth.user()?.phone }}</p>
+      @if (auth.user()?.email) {
+        <p class="text-sm text-gray-400">{{ auth.user()?.email }}</p>
+      }
+    </div>
+    <button (click)="auth.logout()" class="text-sm text-red-400 hover:text-red-600 transition-colors font-medium">
+      Log out
+    </button>
+  </div>
+
+  <!-- Quick links -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm transition-shadow cursor-pointer">
+      <div class="text-2xl mb-2">📦</div>
+      <h2 class="font-semibold text-gray-800">My Orders</h2>
+      <p class="text-sm text-gray-400 mt-1">Track and manage your orders</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm transition-shadow cursor-pointer">
+      <div class="text-2xl mb-2">📍</div>
+      <h2 class="font-semibold text-gray-800">Addresses</h2>
+      <p class="text-sm text-gray-400 mt-1">Manage delivery addresses</p>
+    </div>
+  </div>
+
+  <!-- Help -->
+  <div class="bg-gray-50 rounded-2xl p-5 text-sm text-gray-600">
+    <p class="font-medium text-gray-800 mb-1">Need help?</p>
+    <p>Mon – Sat: 9AM – 5PM</p>
+    <a href="mailto:sparkbuysofficial@gmail.com" class="text-[#439D4C] hover:underline">sparkbuysofficial&#64;gmail.com</a>
+  </div>
+</div>

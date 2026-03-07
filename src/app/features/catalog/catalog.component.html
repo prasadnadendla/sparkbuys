@@ -1,0 +1,70 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-400 mb-4">
+    <a routerLink="/" class="hover:text-[#439D4C]">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{{ collectionTitle() }}</span>
+  </nav>
+
+  <div class="flex items-start gap-6">
+    <!-- Main Content -->
+    <div class="flex-1 min-w-0">
+      <!-- Header row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-[#282a31]">{{ collectionTitle() }}</h1>
+          @if (collection()?.description) {
+            <p class="text-sm text-gray-500 mt-1">{{ collection()?.description }}</p>
+          }
+        </div>
+        <!-- Sort -->
+        <div class="flex items-center gap-2 text-sm">
+          <label class="text-gray-500 whitespace-nowrap">Sort by:</label>
+          <select [(ngModel)]="sortIndex" (ngModelChange)="onSortChange()" class="border border-gray-200 rounded-lg px-3 py-1.5 outline-none text-gray-700 bg-white">
+            @for (opt of sortOptions; track opt.label; let i = $index) {
+              <option [value]="i">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (loading() && products().length === 0) {
+        <!-- Skeleton -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <div class="rounded-2xl bg-white border border-gray-100 overflow-hidden">
+              <div class="aspect-square bg-gray-100 animate-pulse"></div>
+              <div class="p-3 space-y-2">
+                <div class="h-4 bg-gray-100 rounded animate-pulse"></div>
+                <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (products().length === 0) {
+        <div class="text-center py-20 text-gray-400">
+          <p class="text-4xl mb-3">📭</p>
+          <p class="font-medium">No products found</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @for (product of products(); track product.id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+
+        @if (pageInfo()?.hasNextPage) {
+          <div class="mt-8 text-center">
+            <button
+              (click)="loadMore()"
+              [disabled]="loading()"
+              class="border border-[#439D4C] text-[#439D4C] hover:bg-[#439D4C] hover:text-white disabled:opacity-50 font-semibold px-8 py-3 rounded-xl transition-colors"
+            >
+              {{ loading() ? 'Loading...' : 'Load More' }}
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>
