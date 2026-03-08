@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 import { SeoService } from '../../core/services/seo.service';
 
 type Step = 'phone' | 'otp';
@@ -14,6 +15,7 @@ type Step = 'phone' | 'otp';
 })
 export class LoginComponent {
   auth = inject(AuthService);
+  private cart = inject(CartService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private seo = inject(SeoService);
@@ -46,7 +48,11 @@ export class LoginComponent {
   onVerifyOtp() {
     if (this.otp().length !== 6) return;
     this.auth.verifyOtp('+91' + this.phone, this.otp()).subscribe(res => {
-      if (res) this.redirectAfterLogin();
+      if (res) {
+        const shopifyToken = this.auth.shopifyToken;
+        if (shopifyToken) this.cart.linkCustomer(shopifyToken);
+        this.redirectAfterLogin();
+      }
     });
   }
 

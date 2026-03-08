@@ -82,3 +82,12 @@ export const GET_CART = gql`
     cart(id: $cartId) { ...CartFields }
   }
 `;
+
+export const CART_BUYER_IDENTITY_UPDATE = gql`
+  ${CART_FRAGMENT}
+  mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+      cart { ...CartFields }
+    }
+  }
+`;

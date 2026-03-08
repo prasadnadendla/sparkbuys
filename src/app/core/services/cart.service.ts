@@ -2,8 +2,9 @@ import { inject, Injectable, signal, computed, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import { map, switchMap, tap, catchError, of } from 'rxjs';
-import { CREATE_CART, ADD_TO_CART, UPDATE_CART_LINE, REMOVE_CART_LINES, GET_CART } from '../graphql/queries/cart.queries';
+import { CREATE_CART, ADD_TO_CART, UPDATE_CART_LINE, REMOVE_CART_LINES, GET_CART, CART_BUYER_IDENTITY_UPDATE } from '../graphql/queries/cart.queries';
 import { Cart } from '../graphql/shopify.types';
+import { AuthService } from './auth.service';
 
 const CART_ID_KEY = 'sb_cart_id';
 
@@ -11,6 +12,7 @@ const CART_ID_KEY = 'sb_cart_id';
 export class CartService {
   private apollo = inject(Apollo);
   private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
 
   cart = signal<Cart | null>(null);
   loading = signal(false);
@@ -59,7 +61,13 @@ export class CartService {
       : this.apollo.mutate<{ cartCreate: { cart: Cart } }>({
           mutation: CREATE_CART,
           variables: { lines },
-        }).pipe(map(r => r.data!.cartCreate.cart));
+        }).pipe(
+          map(r => r.data!.cartCreate.cart),
+          tap(cart => {
+            const token = this.auth.shopifyToken;
+            if (token) this.linkCustomer(token, cart.id);
+          }),
+        );
 
     mutation$.pipe(
       tap(cart => {
@@ -96,6 +104,18 @@ export class CartService {
       tap(cart => this.cart.set(cart)),
       catchError(() => of(null)),
     ).subscribe(() => this.loading.set(false));
+  }
+
+  linkCustomer(shopifyToken: string, cartId?: string) {
+    const id = cartId ?? this.cartId;
+    if (!id) return;
+    this.apollo.mutate<{ cartBuyerIdentityUpdate: { cart: Cart } }>({
+      mutation: CART_BUYER_IDENTITY_UPDATE,
+      variables: { cartId: id, buyerIdentity: { customerAccessToken: shopifyToken } },
+    }).pipe(
+      map(r => r.data?.cartBuyerIdentityUpdate.cart ?? null),
+      catchError(() => of(null)),
+    ).subscribe(cart => { if (cart) this.cart.set(cart); });
   }
 
   clearCart() {

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '../../core/services/auth.service';
 import { SeoService } from '../../core/services/seo.service';
 import { InrPipe } from '../../shared/pipes/inr.pipe';
 
@@ -12,6 +13,7 @@ import { InrPipe } from '../../shared/pipes/inr.pipe';
 })
 export class CartComponent implements OnInit {
   cart = inject(CartService);
+  auth = inject(AuthService);
   private seo = inject(SeoService);
 
   ngOnInit() {
