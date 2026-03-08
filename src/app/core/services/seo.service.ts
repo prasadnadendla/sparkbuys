@@ -53,13 +53,31 @@ export class SeoService {
     }
   }
 
-  setProduct(product: { title: string; description?: string; image?: string }) {
-    this.set({
-      title: product.title,
-      description: product.description,
-      image: product.image,
-      type: 'product',
-    });
+  setProduct(product: { title: string; description?: string; image?: string; price?: string; currency?: string; available?: boolean }) {
+    this.set({ title: product.title, description: product.description, image: product.image, type: 'product' });
+    if (product.price) {
+      const schema = {
+        '@context': 'https://schema.org/',
+        '@type': 'Product',
+        name: product.title,
+        description: product.description,
+        image: product.image,
+        offers: {
+          '@type': 'Offer',
+          price: product.price,
+          priceCurrency: product.currency ?? 'INR',
+          availability: product.available !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          url: `${BASE_URL}${this.router.url.split('?')[0]}`,
+        },
+      };
+      let script = this.doc.querySelector<HTMLScriptElement>('script[type="application/ld+json"]');
+      if (!script) {
+        script = this.doc.createElement('script');
+        script.setAttribute('type', 'application/ld+json');
+        this.doc.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(schema);
+    }
   }
 
   setCollection(collection: { title: string; description?: string }) {

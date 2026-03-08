@@ -1,6 +1,20 @@
+<!-- Cart toast -->
+@if (cart.toast()) {
+  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1A2744] text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-fade-in">
+    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+    {{ cart.toast() }}
+  </div>
+}
+
+<!-- Share toast -->
+@if (shareToast()) {
+  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-800 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-lg">
+    Link copied!
+  </div>
+}
+
 <div class="max-w-7xl mx-auto px-4 py-8">
   @if (loading()) {
-    <!-- Skeleton -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
       <div class="aspect-square bg-gray-100 rounded-2xl"></div>
       <div class="space-y-4">
@@ -35,11 +49,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
       <!-- Image Gallery -->
       <div>
-        <div class="rounded-2xl overflow-hidden bg-gray-50 aspect-square mb-3">
+        <div class="rounded-2xl overflow-hidden bg-gray-50 aspect-square mb-3 group cursor-zoom-in">
           <img
             [src]="activeImage()"
             [alt]="product()!.title"
-            class="w-full h-full object-contain"
+            class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
           />
         </div>
         @if (images().length > 1) {
@@ -59,14 +73,24 @@
 
       <!-- Product Info -->
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-[#1A2744] leading-snug">{{ product()!.title }}</h1>
+        <div class="flex items-start justify-between gap-3">
+          <h1 class="text-2xl md:text-3xl font-bold text-[#1A2744] leading-snug">{{ product()!.title }}</h1>
+          <button (click)="share()" class="flex-shrink-0 p-2 text-gray-400 hover:text-[#F05A28] transition-colors" title="Share">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+          </button>
+        </div>
 
         <!-- Price -->
-        <div class="mt-4 flex items-baseline gap-3">
+        <div class="mt-4 flex items-baseline gap-3 flex-wrap">
           <span class="text-3xl font-bold text-[#1A2744]">{{ selectedVariant()?.price?.amount | inr }}</span>
           @if (compareAtPrice() > 0 && compareAtPrice() > selectedPrice()) {
             <span class="text-lg text-gray-400 line-through">{{ compareAtPrice() | inr }}</span>
             <span class="bg-red-100 text-red-600 text-sm font-bold px-2 py-0.5 rounded-full">{{ discount() }}% OFF</span>
+          }
+          @if (stockWarning()) {
+            <span class="bg-orange-100 text-orange-600 text-xs font-semibold px-2 py-0.5 rounded-full">{{ stockWarning() }}</span>
           }
         </div>
 
@@ -78,10 +102,13 @@
               <div class="flex flex-wrap gap-2">
                 @for (val of option.values; track val) {
                   <button
-                    (click)="selectOption(option.name, val)"
+                    (click)="isOptionAvailable(option.name, val) && selectOption(option.name, val)"
                     [class.bg-[#F05A28]]="selectedOptions[option.name] === val"
                     [class.text-white]="selectedOptions[option.name] === val"
                     [class.border-[#F05A28]]="selectedOptions[option.name] === val"
+                    [class.opacity-40]="!isOptionAvailable(option.name, val)"
+                    [class.line-through]="!isOptionAvailable(option.name, val)"
+                    [class.cursor-not-allowed]="!isOptionAvailable(option.name, val)"
                     class="border border-gray-200 text-gray-700 text-sm px-3 py-1.5 rounded-lg hover:border-[#F05A28] transition-colors"
                   >{{ val }}</button>
                 }
@@ -101,7 +128,7 @@
         </div>
 
         <!-- CTA Buttons -->
-        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <div id="product-cta" class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             [disabled]="!product()!.availableForSale || cart.loading()"
             (click)="addToCart()"
@@ -125,6 +152,15 @@
           <div class="bg-gray-50 rounded-xl p-2">↩️<br/>Easy Returns</div>
         </div>
 
+        <!-- Tags -->
+        <!-- @if (displayTags().length > 0) {
+          <div class="mt-5 flex flex-wrap gap-2">
+            @for (tag of displayTags(); track tag) {
+              <span class="bg-gray-100 text-gray-500 text-xs px-2.5 py-1 rounded-full">{{ tag }}</span>
+            }
+          </div>
+        } -->
+
         <!-- Description -->
         @if (product()!.descriptionHtml) {
           <div class="mt-8">
@@ -134,6 +170,19 @@
         }
       </div>
     </div>
+
+    <!-- You May Also Like -->
+    @if (relatedProducts().length > 0) {
+      <div class="mt-16">
+        <h2 class="text-xl font-bold text-[#1A2744] mb-5">You May Also Like</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @for (p of relatedProducts(); track p.id) {
+            <app-product-card [product]="p" />
+          }
+        </div>
+      </div>
+    }
+
   } @else {
     <div class="text-center py-20 text-gray-400">
       <p class="text-5xl mb-4">😕</p>
@@ -142,3 +191,22 @@
     </div>
   }
 </div>
+
+<!-- Sticky CTA bar (mobile only) -->
+@if (showStickyBar() && product()?.availableForSale) {
+  <div class="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t border-gray-100 shadow-lg px-4 py-3 flex gap-3">
+    <button
+      [disabled]="cart.loading()"
+      (click)="addToCart()"
+      class="flex-1 bg-[#F05A28] hover:bg-[#D44D20] disabled:bg-gray-200 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+    >
+      {{ cart.loading() ? 'Adding...' : 'Add to Cart' }}
+    </button>
+    <button
+      (click)="buyNow()"
+      class="flex-1 border-2 border-[#F05A28] text-[#F05A28] font-semibold py-3 rounded-xl text-sm"
+    >
+      Buy Now
+    </button>
+  </div>
+}

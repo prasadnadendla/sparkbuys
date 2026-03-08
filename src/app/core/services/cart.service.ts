@@ -16,6 +16,7 @@ export class CartService {
 
   cart = signal<Cart | null>(null);
   loading = signal(false);
+  toast = signal<string | null>(null);
 
   quantity = computed(() => this.cart()?.totalQuantity ?? 0);
   total = computed(() => this.cart()?.cost.totalAmount.amount ?? '0');
@@ -73,6 +74,8 @@ export class CartService {
       tap(cart => {
         this.cart.set(cart);
         this.cartId = cart.id;
+        this.toast.set('Added to cart!');
+        setTimeout(() => this.toast.set(null), 2500);
       }),
       catchError(() => of(null)),
     ).subscribe(() => this.loading.set(false));
