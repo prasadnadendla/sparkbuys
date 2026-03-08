@@ -85,6 +85,7 @@
             [href]="cart.cart()?.checkoutUrl ?? '#'"
             target="_blank"
             rel="noopener"
+            (click)="onCheckout()"
             class="mt-3 block text-center bg-[#F05A28] hover:bg-[#D44D20] text-white font-semibold py-3.5 rounded-xl transition-colors"
           >
             Proceed to Checkout →

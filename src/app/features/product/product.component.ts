@@ -1,11 +1,13 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { catchError, of } from 'rxjs';
 import { GET_PRODUCT } from '../../core/graphql/queries/product.queries';
 import { Product, ProductVariant } from '../../core/graphql/shopify.types';
 import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '../../core/services/auth.service';
 import { SeoService } from '../../core/services/seo.service';
+import { PixelService } from '../../core/services/pixel.service';
 import { InrPipe } from '../../shared/pipes/inr.pipe';
 
 @Component({
@@ -16,9 +18,12 @@ import { InrPipe } from '../../shared/pipes/inr.pipe';
 })
 export class ProductComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private apollo = inject(Apollo);
   cart = inject(CartService);
+  auth = inject(AuthService);
   private seo = inject(SeoService);
+  private pixel = inject(PixelService);
 
   product = signal<Product | null>(null);
   loading = signal(true);
@@ -46,11 +51,6 @@ export class ProductComponent implements OnInit {
     return (!c || c <= p) ? 0 : Math.round(((c - p) / c) * 100);
   });
 
-  buyNowUrl = computed(() => {
-    const p = this.product();
-    return p ? `https://sparkbuys.in/products/${p.handle}` : '#';
-  });
-
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const handle = params.get('handle') ?? '';
@@ -63,9 +63,34 @@ export class ProductComponent implements OnInit {
   }
 
   addToCart() {
-    const variantId = this.selectedVariant()?.id;
-    if (!variantId) return;
-    for (let i = 0; i < this.qty(); i++) this.cart.addItem(variantId);
+    const variant = this.selectedVariant();
+    if (!variant?.id) return;
+    this.pixel.addToCart({
+      content_ids: [variant.id],
+      content_name: this.product()!.title,
+      content_type: 'product',
+      value: this.selectedPrice() * this.qty(),
+      currency: 'INR',
+    });
+    for (let i = 0; i < this.qty(); i++) this.cart.addItem(variant.id);
+  }
+
+  buyNow() {
+    if (!this.auth.isLoggedIn) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
+      return;
+    }
+    const variant = this.selectedVariant();
+    if (!variant?.id) return;
+    this.pixel.addToCart({
+      content_ids: [variant.id],
+      content_name: this.product()!.title,
+      content_type: 'product',
+      value: this.selectedPrice() * this.qty(),
+      currency: 'INR',
+    });
+    for (let i = 0; i < this.qty(); i++) this.cart.addItem(variant.id);
+    this.router.navigate(['/cart']);
   }
 
   private loadProduct(handle: string) {
@@ -90,6 +115,13 @@ export class ProductComponent implements OnInit {
           title: p.seo?.title ?? p.title,
           description: p.seo?.description ?? p.description,
           image: p.featuredImage?.url,
+        });
+        this.pixel.viewContent({
+          content_ids: [p.variants?.nodes?.[0]?.id ?? p.id],
+          content_name: p.title,
+          content_type: 'product',
+          value: parseFloat(p.priceRange.minVariantPrice.amount),
+          currency: 'INR',
         });
       }
     });

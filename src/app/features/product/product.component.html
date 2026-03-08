@@ -109,13 +109,13 @@
           >
             {{ cart.loading() ? 'Adding...' : (product()!.availableForSale ? 'Add to Cart' : 'Sold Out') }}
           </button>
-          <a
-            [href]="buyNowUrl()"
-            target="_blank"
-            class="flex-1 border-2 border-[#F05A28] text-[#F05A28] hover:bg-[#F05A28] hover:text-white font-semibold py-3.5 rounded-xl text-center transition-colors"
+          <button
+            [disabled]="!product()!.availableForSale"
+            (click)="buyNow()"
+            class="flex-1 border-2 border-[#F05A28] text-[#F05A28] hover:bg-[#F05A28] hover:text-white disabled:border-gray-200 disabled:text-gray-400 font-semibold py-3.5 rounded-xl text-center transition-colors"
           >
             Buy Now
-          </a>
+          </button>
         </div>
 
         <!-- Trust badges -->
