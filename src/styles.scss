@@ -37,3 +37,10 @@ img { max-width: 100%; }
 
 /* Focus styles */
 :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* Shimmer animation for progress bars */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.animate-shimmer { animation: shimmer 2.2s ease-in-out infinite; }
