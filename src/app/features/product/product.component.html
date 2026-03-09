@@ -27,7 +27,7 @@
     </div>
   } @else if (error()) {
     <div class="text-center py-20">
-      <p class="text-5xl mb-4">⚠️</p>
+      <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
       <p class="text-lg font-medium text-gray-700">Something went wrong</p>
       <p class="text-sm text-gray-400 mt-1">Could not load this product. Please check your connection.</p>
       <button (click)="ngOnInit()" class="mt-5 bg-[#F05A28] text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-[#D44D20] transition-colors">
@@ -147,9 +147,18 @@
 
         <!-- Trust badges -->
         <div class="mt-5 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
-          <div class="bg-gray-50 rounded-xl p-2">🚚<br/>Free Shipping</div>
-          <div class="bg-gray-50 rounded-xl p-2">💳<br/>COD Available</div>
-          <div class="bg-gray-50 rounded-xl p-2">↩️<br/>Easy Returns</div>
+          <div class="bg-gray-50 rounded-xl p-3 flex flex-col items-center gap-1">
+            <svg class="w-5 h-5 text-[#F05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+            Free Shipping
+          </div>
+          <div class="bg-gray-50 rounded-xl p-3 flex flex-col items-center gap-1">
+            <svg class="w-5 h-5 text-[#F05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            COD Available
+          </div>
+          <div class="bg-gray-50 rounded-xl p-3 flex flex-col items-center gap-1">
+            <svg class="w-5 h-5 text-[#F05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Easy Returns
+          </div>
         </div>
 
         <!-- Tags -->
@@ -185,7 +194,7 @@
 
   } @else {
     <div class="text-center py-20 text-gray-400">
-      <p class="text-5xl mb-4">😕</p>
+      <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       <p class="text-lg font-medium">Product not found</p>
       <a routerLink="/collections/all" class="mt-4 inline-block text-[#F05A28] underline">Browse all products</a>
     </div>
