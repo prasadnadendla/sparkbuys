@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZonelessChangeDetection, isDevMode, PLATFORM_ID } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withViewTransitions, withInMemoryScrolling } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { provideClientHydration, withIncrementalHydration } from '@angular/platform-browser';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -14,7 +14,7 @@ import { environment } from '../environments/environment';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
-    provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
+    provideRouter(routes, withComponentInputBinding(), withViewTransitions(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideClientHydration(withIncrementalHydration()),
     provideHttpClient(withFetch()),
     provideServiceWorker('ngsw-worker.js', {
