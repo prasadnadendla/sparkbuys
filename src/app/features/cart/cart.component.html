@@ -247,6 +247,7 @@
           }
 
           <a
+            id="cart-checkout-btn"
             [href]="cart.cart()?.checkoutUrl ?? '#'"
             target="_blank"
             rel="noopener"
@@ -290,3 +291,22 @@
     </div>
   }
 </div>
+
+<!-- Sticky checkout bar -->
+@if (showStickyCheckout() && cart.items().length > 0) {
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3">
+    <div class="flex-1 min-w-0">
+      <p class="text-xs text-gray-500">{{ cart.quantity() }} item{{ cart.quantity() === 1 ? '' : 's' }}</p>
+      <p class="text-sm font-bold text-gray-900">{{ cart.cart()?.cost?.totalAmount?.amount | inr }}</p>
+    </div>
+    <a
+      [href]="cart.cart()?.checkoutUrl ?? '#'"
+      target="_blank"
+      rel="noopener"
+      (click)="onCheckout($event)"
+      class="flex-shrink-0 bg-[#F05A28] hover:bg-[#D44D20] text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
+    >
+      Checkout →
+    </a>
+  </div>
+}

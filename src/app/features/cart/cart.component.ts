@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +19,7 @@ import { InrPipe } from '../../shared/pipes/inr.pipe';
   imports: [RouterLink, FormsModule, InrPipe, ProductCardComponent],
   templateUrl: './cart.component.html'
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, AfterViewInit {
   cart = inject(CartService);
   auth = inject(AuthService);
   private router = inject(Router);
@@ -30,11 +30,22 @@ export class CartComponent implements OnInit {
 
   discountInput = '';
   showLoginModal = signal(false);
+  showStickyCheckout = signal(false);
   trendingProducts = signal<Product[]>([]);
 
   ngOnInit() {
     this.seo.set({ title: 'Cart', noindex: true });
     this.loadTrending();
+  }
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = document.getElementById('cart-checkout-btn');
+    if (!el) return;
+    new IntersectionObserver(
+      entries => this.showStickyCheckout.set(!entries[0].isIntersecting),
+      { threshold: 0 }
+    ).observe(el);
   }
 
   updateQty(lineId: string, qty: number) {
