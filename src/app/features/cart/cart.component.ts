@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '../../core/services/cart.service';
 import { AuthService } from '../../core/services/auth.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -9,7 +10,7 @@ import { InrPipe } from '../../shared/pipes/inr.pipe';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [RouterLink, InrPipe],
+  imports: [RouterLink, FormsModule, InrPipe],
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit {
@@ -18,6 +19,8 @@ export class CartComponent implements OnInit {
   private seo = inject(SeoService);
   private pixel = inject(PixelService);
 
+  discountInput = '';
+
   ngOnInit() {
     this.seo.set({ title: 'Cart', noindex: true });
   }
@@ -25,6 +28,16 @@ export class CartComponent implements OnInit {
   updateQty(lineId: string, qty: number) {
     if (qty <= 0) this.cart.removeItem(lineId);
     else this.cart.updateQuantity(lineId, qty);
+  }
+
+  applyDiscount() {
+    if (!this.discountInput.trim()) return;
+    this.cart.applyDiscount(this.discountInput);
+    this.discountInput = '';
+  }
+
+  removeDiscount() {
+    this.cart.applyDiscount('');
   }
 
   onCheckout() {

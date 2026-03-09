@@ -5,6 +5,7 @@ export const CART_FRAGMENT = gql`
     id
     checkoutUrl
     totalQuantity
+    discountCodes { code applicable }
     cost {
       subtotalAmount { amount currencyCode }
       totalAmount { amount currencyCode }
@@ -88,6 +89,16 @@ export const CART_BUYER_IDENTITY_UPDATE = gql`
   mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
     cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
       cart { ...CartFields }
+    }
+  }
+`;
+
+export const CART_DISCOUNT_CODES_UPDATE = gql`
+  ${CART_FRAGMENT}
+  mutation CartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+      cart { ...CartFields }
+      userErrors { field message }
     }
   }
 `;

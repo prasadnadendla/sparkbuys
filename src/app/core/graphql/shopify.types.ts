@@ -142,6 +142,7 @@ export interface Cart {
   id: string;
   checkoutUrl: string;
   totalQuantity: number;
+  discountCodes: { code: string; applicable: boolean }[];
   cost: {
     subtotalAmount: Money;
     totalAmount: Money;

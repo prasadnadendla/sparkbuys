@@ -2,7 +2,7 @@ import { inject, Injectable, signal, computed, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import { map, switchMap, tap, catchError, of } from 'rxjs';
-import { CREATE_CART, ADD_TO_CART, UPDATE_CART_LINE, REMOVE_CART_LINES, GET_CART, CART_BUYER_IDENTITY_UPDATE } from '../graphql/queries/cart.queries';
+import { CREATE_CART, ADD_TO_CART, UPDATE_CART_LINE, REMOVE_CART_LINES, GET_CART, CART_BUYER_IDENTITY_UPDATE, CART_DISCOUNT_CODES_UPDATE } from '../graphql/queries/cart.queries';
 import { Cart } from '../graphql/shopify.types';
 import { AuthService } from './auth.service';
 
@@ -119,6 +119,21 @@ export class CartService {
       map(r => r.data?.cartBuyerIdentityUpdate.cart ?? null),
       catchError(() => of(null)),
     ).subscribe(cart => { if (cart) this.cart.set(cart); });
+  }
+
+  applyDiscount(code: string) {
+    const cartId = this.cartId;
+    if (!cartId) return;
+    const codes = code.trim() ? [code.trim()] : [];
+    this.apollo.mutate<{ cartDiscountCodesUpdate: { cart: Cart; userErrors: { message: string }[] } }>({
+      mutation: CART_DISCOUNT_CODES_UPDATE,
+      variables: { cartId, discountCodes: codes },
+    }).pipe(
+      map(r => r.data?.cartDiscountCodesUpdate),
+      catchError(() => of(null)),
+    ).subscribe(result => {
+      if (result?.cart) this.cart.set(result.cart);
+    });
   }
 
   clearCart() {
