@@ -34,6 +34,12 @@ export const appConfig: ApplicationConfig = {
                 collection: { keyArgs: ['handle'] },
               },
             },
+            Product: {
+              fields: {
+                priceRange: { merge: true },
+                compareAtPriceRange: { merge: true },
+              },
+            },
           },
         });
 
