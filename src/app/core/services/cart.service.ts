@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Apollo } from 'apollo-angular';
-import { map, switchMap, tap, catchError, of } from 'rxjs';
+import { map, tap, catchError, of } from 'rxjs';
 import { CREATE_CART, ADD_TO_CART, UPDATE_CART_LINE, REMOVE_CART_LINES, GET_CART, CART_BUYER_IDENTITY_UPDATE, CART_DISCOUNT_CODES_UPDATE } from '../graphql/queries/cart.queries';
 import { Cart } from '../graphql/shopify.types';
 import { AuthService } from './auth.service';
@@ -65,8 +65,8 @@ export class CartService {
         }).pipe(
           map(r => r.data!.cartCreate.cart),
           tap(cart => {
-            const token = this.auth.shopifyToken;
-            if (token) this.linkCustomer(token, cart.id);
+            const phone = this.auth.user()?.phone;
+            if (phone) this.linkCustomer(phone, cart.id);
           }),
         );
 
@@ -109,12 +109,12 @@ export class CartService {
     ).subscribe(() => this.loading.set(false));
   }
 
-  linkCustomer(shopifyToken: string, cartId?: string) {
+  linkCustomer(phone: string, cartId?: string) {
     const id = cartId ?? this.cartId;
     if (!id) return;
     this.apollo.mutate<{ cartBuyerIdentityUpdate: { cart: Cart } }>({
       mutation: CART_BUYER_IDENTITY_UPDATE,
-      variables: { cartId: id, buyerIdentity: { customerAccessToken: shopifyToken } },
+      variables: { cartId: id, buyerIdentity: { phone } },
     }).pipe(
       map(r => r.data?.cartBuyerIdentityUpdate.cart ?? null),
       catchError(() => of(null)),

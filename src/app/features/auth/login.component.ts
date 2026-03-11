@@ -49,8 +49,7 @@ export class LoginComponent {
     if (this.otp().length !== 6) return;
     this.auth.verifyOtp('+91' + this.phone, this.otp()).subscribe(res => {
       if (res) {
-        const shopifyToken = this.auth.shopifyToken;
-        if (shopifyToken) this.cart.linkCustomer(shopifyToken);
+        this.cart.linkCustomer('+91' + this.phone);
         this.redirectAfterLogin();
       }
     });
