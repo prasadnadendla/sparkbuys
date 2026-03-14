@@ -203,7 +203,7 @@
 
 <!-- Sticky CTA bar (mobile only) -->
 @if (showStickyBar() && product()?.availableForSale) {
-  <div class="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t border-gray-100 shadow-lg px-4 py-3 flex gap-3">
+  <div class="fixed bottom-14 left-0 right-0 z-40 md:hidden bg-white border-t border-gray-100 shadow-lg px-4 py-3 flex gap-3">
     <button
       [disabled]="cart.loading()"
       (click)="addToCart()"
